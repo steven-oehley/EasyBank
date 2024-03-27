@@ -16,9 +16,9 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
-  color: #444;
-  background-color: #f3f3f3;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  background-color: #082f49;
   height: 100vh;
   padding: 2rem;
 }
@@ -36,7 +36,7 @@ nav {
 }
 
 .logo {
-  height: 5.25rem;
+  height: 18rem;
 }
 
 .login {
@@ -53,7 +53,7 @@ nav {
   border-radius: 10rem;
   margin-right: 1rem;
   color: inherit;
-  border: 1px solid #fff;
+  border: 1px solid #777;
   transition: all 0.3s;
 }
 
@@ -94,7 +94,7 @@ nav {
   gap: 2rem;
 
   /* NOTE This creates the fade in/out anumation */
-  opacity: 0;
+  /* opacity: 0; */
   transition: all 1s;
 }
 
@@ -114,7 +114,7 @@ nav {
 
 .balance__date {
   font-size: 1.4rem;
-  color: #888;
+  color: #999;
 }
 
 .balance__value {
@@ -122,7 +122,7 @@ nav {
   font-weight: 400;
 }
 
-/* MOVEMENTS */
+/* TRANSACTIONS */
 .movements {
   grid-row: 2 / span 3;
   background-color: #fff;
@@ -135,23 +135,36 @@ nav {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #eee;
+  color: #222;
 }
 
 .movements__type {
   font-size: 1.1rem;
   text-transform: uppercase;
   font-weight: 500;
-  color: #fff;
   padding: 0.1rem 1rem;
   border-radius: 10rem;
   margin-right: 2rem;
+}
+
+.movements__type--withdrawal {
+  color: #fff;
+}
+
+.movements__type--deposit {
+  color: #000;
+}
+
+.movements__type--deposit,
+.movements__type--withdrawal {
+  font-weight: 500;
 }
 
 .movements__date {
   font-size: 1.1rem;
   text-transform: uppercase;
   font-weight: 500;
-  color: #666;
+  color: #222;
 }
 
 .movements__type--deposit {
@@ -159,12 +172,16 @@ nav {
 }
 
 .movements__type--withdrawal {
-  background-image: linear-gradient(to top left, #e52a5a, #ff585f);
+  background-image: linear-gradient(to top left, #e52a5a, #ff656d);
 }
 
 .movements__value {
   font-size: 1.7rem;
   margin-left: auto;
+}
+
+.movements__value--deposit {
+  font-weight: 500;
 }
 
 /* SUMMARY */
@@ -204,6 +221,7 @@ nav {
   font-size: 1.3rem;
   font-weight: 500;
   cursor: pointer;
+  color: #fff;
 }
 
 /* OPERATIONS */
