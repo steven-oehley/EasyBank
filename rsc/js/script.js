@@ -73,8 +73,8 @@ function displayTransactions(transactionsArr) {
     } ${transactionType} #${
       transactionType === 'deposit' ? depositNumber : withdrawalNumber
     }</div>
-          <div class="movements__value movements__value--${transactionType}">${transaction}
-          €</div>
+          <div class="movements__value movements__value--${transactionType}">R ${transaction}
+          </div>
         </div>
     `;
     containerTransactions.insertAdjacentHTML('afterbegin', htmlToRender);
@@ -83,4 +83,43 @@ function displayTransactions(transactionsArr) {
   });
 }
 
+function createUsernames(accs) {
+  accs.forEach(account => {
+    account.username = account.owner
+      .toLowerCase()
+      .split(' ')
+      .map(flName => flName[0])
+      .join('');
+  });
+}
+
+function calcDisplayBalance(transactions) {
+  const balance = transactions.reduce(
+    (acc, transaction) => acc + transaction,
+    0
+  );
+  labelBalance.textContent = `${balance} ZAR`;
+}
+
+function calcDisplaySummary(transactions, interestRate) {
+  const depositsTotal = transactions
+    .filter(transac => transac > 0)
+    .reduce((acc, transac) => acc + transac);
+  const withdrawalsTotal = transactions
+    .filter(transac => transac < 0)
+    .reduce((acc, transac) => acc + transac);
+  const interestTotal = transactions
+    .filter(transac => transac > 0)
+    .map(deposit => (deposit * interestRate) / 100)
+    .filter(interestPayment => interestPayment > 1) // bank not pay interest on cents
+    .reduce((acc, interest) => acc + interest);
+
+  labelSumIn.textContent = `R ${depositsTotal}`;
+  labelSumOut.textContent = `R ${Math.abs(withdrawalsTotal)}`;
+  labelSumInterest.textContent = `R ${interestTotal}`;
+}
+
+createUsernames(accounts);
 displayTransactions(account1.transactions);
+calcDisplayBalance(account1.transactions);
+calcDisplaySummary(account1.transactions, account1.interestRate);
