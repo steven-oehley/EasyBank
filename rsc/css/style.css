@@ -52,7 +52,7 @@ nav {
   width: 12rem;
   border-radius: 10rem;
   margin-right: 1rem;
-  color: inherit;
+  color: #222;
   border: 1px solid #777;
   transition: all 0.3s;
 }
@@ -94,7 +94,7 @@ nav {
   gap: 2rem;
 
   /* NOTE This creates the fade in/out anumation */
-  /* opacity: 0; */
+  opacity: 0;
   transition: all 1s;
 }
 
