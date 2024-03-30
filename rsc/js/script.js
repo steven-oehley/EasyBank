@@ -84,6 +84,7 @@ function displayTransactions(transactionsArr) {
     } ${transactionType} #${
       transactionType === 'deposit' ? depositNumber : withdrawalNumber
     }</div>
+    <div class="movements__info movements__info--${transactionType}></div>
           <div class="movements__value movements__value--${transactionType}">R ${transaction}
           </div>
         </div>
@@ -104,11 +105,12 @@ function createUsernames(accs) {
   });
 }
 
-function calcDisplayBalance(transactions) {
-  const balance = transactions.reduce(
+function calcDisplayBalance(account) {
+  const balance = account.transactions.reduce(
     (acc, transaction) => acc + transaction,
     0
   );
+  account.balance = balance;
   labelBalance.textContent = `${balance} ZAR`;
 }
 
@@ -130,6 +132,16 @@ function calcDisplaySummary(account) {
   labelSumInterest.textContent = `R ${interestTotal}`;
 }
 
+function updateUIForAccount() {
+  // display transactions
+  displayTransactions(activeAccount.transactions);
+  // display balance
+  calcDisplayBalance(activeAccount);
+  // display summary
+  calcDisplaySummary(activeAccount);
+  // show app & clear input fields
+}
+
 // ==========================================================================
 // Event Handlers
 // ==========================================================================
@@ -142,13 +154,7 @@ btnLogin.addEventListener('click', e => {
   if (activeAccount?.pin === +inputLoginPin.value) {
     // display welcome message
     labelWelcome.textContent = `Hi ${activeAccount.owner}`;
-    // display transactions
-    displayTransactions(activeAccount.transactions);
-    // display balance
-    calcDisplayBalance(activeAccount.transactions);
-    // display summary
-    calcDisplaySummary(activeAccount);
-    // show app & clear input fields
+    updateUIForAccount();
     containerApp.style.opacity = 100;
     inputLoginPin.value = '';
     inputLoginUsername.value = '';
@@ -156,4 +162,40 @@ btnLogin.addEventListener('click', e => {
   }
 });
 
+btnTransfer.addEventListener('click', e => {
+  // prevent form default
+  e.preventDefault();
+
+  // transfer to and amount values
+  const transferTo = inputTransferTo.value;
+  const transferAmount = +inputTransferAmount.value;
+
+  // find transferTo account from username
+  const transferAccount = accounts.find(acc => acc.username === transferTo);
+
+  // move money out of activeAccount and into transferAccount
+  if (
+    activeAccount.balance >= transferAmount &&
+    transferAmount > 0 &&
+    transferAccount &&
+    transferAccount?.username !== activeAccount.username
+  ) {
+    // transfer money
+    activeAccount.transactions.push(-transferAmount);
+    transferAccount.transactions.push(transferAmount);
+    updateUIForAccount();
+    inputTransferTo.value = '';
+    inputTransferAmount.value = '';
+    inputTransferAmount.blur();
+    console.log('VALID TRANSFER');
+  } else {
+    inputTransferTo.value = '';
+    inputTransferAmount.value = '';
+    inputTransferAmount.blur();
+  }
+});
+
+// ==========================================================================
+// Create Object Properties - usernames
+// ==========================================================================
 createUsernames(accounts);
