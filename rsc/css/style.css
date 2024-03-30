@@ -325,6 +325,6 @@ h2 {
   color: red;
 }
 
-.error__message--close {
+.error__message--close span {
   color: yellow;
 }

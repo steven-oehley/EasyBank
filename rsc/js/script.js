@@ -87,7 +87,7 @@ function displayTransactions(transactionsArr) {
     } ${transactionType} #${
       transactionType === 'deposit' ? depositNumber : withdrawalNumber
     }</div>
-    <div class="movements__info movements__info--${transactionType}></div>
+ 
           <div class="movements__value movements__value--${transactionType}">R ${transaction}
           </div>
         </div>
@@ -201,12 +201,33 @@ btnTransfer.addEventListener('click', e => {
   }
 });
 
+btnLoan.addEventListener('click', e => {
+  e.preventDefault();
+  const loanRequest = +inputLoanAmount.value;
+  // only grant loan if at least one deposit is >= 10% of loan request
+  if (
+    activeAccount.transactions.some(
+      transaction => transaction >= loanRequest * 0.1
+    )
+  ) {
+    activeAccount.transactions.push(loanRequest);
+    updateUIForAccount();
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+    labelErrorLoan.innerHTML = '';
+  } else {
+    labelErrorLoan.innerHTML =
+      '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> No deposit, at least 10% of the requested loan</p>';
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+  }
+});
+
 btnClose.addEventListener('click', e => {
   // prevent default
   e.preventDefault();
   const accountUser = inputCloseUsername.value;
   const accountPin = +inputClosePin.value;
-  console.log(accounts);
   if (
     activeAccount.username === accountUser &&
     activeAccount.pin === accountPin
@@ -222,13 +243,15 @@ btnClose.addEventListener('click', e => {
 
     // reset welcome message
     labelWelcome.textContent = 'Log in to get started';
+
+    // reset labelErrorClose
+    labelErrorClose.innerHTML = '';
   } else {
     labelErrorClose.innerHTML =
       '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> Error with details, please try again.</p>';
   }
 
   // reset labels
-  labelErrorClose.innerHTML = '';
   inputCloseUsername.value = '';
   inputClosePin.value = '';
   inputClosePin.blur();
@@ -238,4 +261,3 @@ btnClose.addEventListener('click', e => {
 // Create Object Properties - usernames
 // ==========================================================================
 createUsernames(accounts);
-console.log(accounts);
