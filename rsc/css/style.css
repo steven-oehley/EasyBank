@@ -313,3 +313,18 @@ h2 {
 .timer {
   font-weight: 600;
 }
+
+.error__message--transfer,
+.error__message--loan,
+.error__message--close {
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+.error span {
+  color: red;
+}
+
+.error__message--close {
+  color: yellow;
+}

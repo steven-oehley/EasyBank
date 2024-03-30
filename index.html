@@ -14,6 +14,12 @@
       href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="
+https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css
+"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="./rsc/css/style.css" />
     <title>EASYBANK</title>
@@ -75,6 +81,7 @@
           <label class="form__label">Acc Username</label>
           <label class="form__label">Amount</label>
         </form>
+        <div class="error error__message--transfer"></div>
       </div>
 
       <!-- OPERATION: LOAN -->
@@ -85,6 +92,7 @@
           <button class="form__btn form__btn--loan">&rarr;</button>
           <label class="form__label form__label--loan">Amount</label>
         </form>
+        <div class="error error__message--loan"></div>
       </div>
 
       <!-- OPERATION: CLOSE -->
@@ -101,6 +109,7 @@
           <label class="form__label">Confirm user</label>
           <label class="form__label">Confirm PIN</label>
         </form>
+        <div class="error error__message--close"></div>
       </div>
 
       <!-- LOGOUT TIMER -->

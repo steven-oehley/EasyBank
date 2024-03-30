@@ -47,6 +47,9 @@ const labelBalance = document.querySelector('.balance__value');
 const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
+const labelErrorTransfer = document.querySelector('.error__message--transfer');
+const labelErrorLoan = document.querySelector('.error__message--loan');
+const labelErrorClose = document.querySelector('.error__message--close');
 const labelTimer = document.querySelector('.timer');
 
 // container elements
@@ -187,15 +190,52 @@ btnTransfer.addEventListener('click', e => {
     inputTransferTo.value = '';
     inputTransferAmount.value = '';
     inputTransferAmount.blur();
+    labelErrorTransfer.innerHTML = '';
     console.log('VALID TRANSFER');
   } else {
+    labelErrorTransfer.innerHTML =
+      '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> Error with details, please try again.</p>';
     inputTransferTo.value = '';
     inputTransferAmount.value = '';
     inputTransferAmount.blur();
   }
 });
 
+btnClose.addEventListener('click', e => {
+  // prevent default
+  e.preventDefault();
+  const accountUser = inputCloseUsername.value;
+  const accountPin = +inputClosePin.value;
+  console.log(accounts);
+  if (
+    activeAccount.username === accountUser &&
+    activeAccount.pin === accountPin
+  ) {
+    const accToDeleteIndex = accounts.findIndex(
+      acc => acc.username === activeAccount.username
+    );
+    // delete account
+    accounts.splice(accToDeleteIndex, 1);
+
+    //hide UI
+    containerApp.style.opacity = 0;
+
+    // reset welcome message
+    labelWelcome.textContent = 'Log in to get started';
+  } else {
+    labelErrorClose.innerHTML =
+      '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> Error with details, please try again.</p>';
+  }
+
+  // reset labels
+  labelErrorClose.innerHTML = '';
+  inputCloseUsername.value = '';
+  inputClosePin.value = '';
+  inputClosePin.blur();
+});
+
 // ==========================================================================
 // Create Object Properties - usernames
 // ==========================================================================
 createUsernames(accounts);
+console.log(accounts);
