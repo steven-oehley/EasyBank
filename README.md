@@ -54,7 +54,16 @@ The project consists of an HTML file (index.html) that serves as the main entry 
 - elements.js: Contains references to all DOM elements used in the application, along with their corresponding selectors.
 
 ## Usage 👨‍💻
-To run the EasyBank web application, simply open the index.html file in a web browser. You can then interact with the various features mentioned above.
+To run the EasyBank web application, simply open the index.html file in a web browser or view the live demo. 
+You can then interact with the various features mentioned above.
+
+To login to the system you can use one of these four accounts. 
+- username: so, pin: 1111
+- username: jd, pin: 2222
+- username: stw, pin: 3333
+- username: ss, pin: 4444
+
+You can transfer money between accounts and see how each account is affected. 
 
 ## Credits 💰
 
