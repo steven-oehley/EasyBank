@@ -1,8 +1,9 @@
 
 # EasyBank Web Application 🏦
 <hr>
-
-![image info](./rsc/images/EASY_BANK-removebg.png)
+<p align="center">
+  <img width="680" height="300" src="./rsc/images/EASY_BANK-removebg.png">
+</p>
 
 Welcome to EasyBank 💰, a simple and intuitive banking web application that provides various features for managing your finances. 
 Below is an overview of the functionality and features available in the EasyBank application:
