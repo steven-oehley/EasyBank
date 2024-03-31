@@ -5,7 +5,8 @@
   <img width="680" height="auto" height="300" src="./rsc/images/EASY_BANK-removebg.png">
 </p>
 
-Welcome to EasyBank 💰, a simple and intuitive banking web application that provides various features for managing your finances. 
+Welcome to EasyBank 💰, a simple and intuitive banking web application that provides various features for managing your finances.         
+A live project demo can be viewed here : <a href="https://easybanklivedemo.netlify.app/">EASYBANK live demo</a>
 Below is an overview of the functionality and features available in the EasyBank application:
 
 ## Functionality Overview 💳
