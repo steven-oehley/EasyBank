@@ -328,3 +328,52 @@ h2 {
 .error__message--close span {
   color: yellow;
 }
+
+/* -------------------------- */
+/* CLASSES TO MAKE MODAL WORK */
+.hidden {
+  display: none;
+}
+
+.modal {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.75rem;
+  color: #eedcb9;
+  background-color: #082f49;
+  padding: 6rem;
+  border-radius: 5px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.modal h2 {
+  color: #ffc203;
+  font-size: 2rem;
+}
+
+.overlay {
+  position: fixed; /* Change to fixed positioning */
+  top: 0;
+  left: 0;
+  width: 100%; /* Set width to 100% */
+  height: 100%; /* Set height to 100% */
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  font-size: 5rem;
+  color: #eedcb9;
+  cursor: pointer;
+  border: none;
+  background: none;
+}

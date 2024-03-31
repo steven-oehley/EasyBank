@@ -28,4 +28,9 @@ export const elements = {
   inputLoanAmount: document.querySelector('.form__input--loan-amount'),
   inputCloseUsername: document.querySelector('.form__input--user'),
   inputClosePin: document.querySelector('.form__input--pin'),
+  // modal els
+  modal: document.querySelector('.modal'),
+  btnCloseModal: document.querySelector('.close-modal'),
+  modalMessage: document.querySelector('.modal-message'),
+  overlay: document.querySelector('.overlay'),
 };

@@ -7,6 +7,8 @@ import { elements } from './elements.js';
 
 let activeAccount;
 let sortedDisplay = false;
+let time = 300;
+let logoutTimer;
 
 // ==========================================================================
 // Functions
@@ -135,18 +137,53 @@ function updateUIForAccount() {
   // show app & clear input fields
 }
 
+function closeModal() {
+  elements.modal.classList.toggle('hidden');
+  elements.overlay.classList.toggle('hidden');
+}
+
+function tickTimer() {
+  let minutes = String(Math.floor(time / 60)).padStart(2, '0');
+  let seconds = String(time % 60).padStart(2, '0');
+  // display time on UI
+  elements.labelTimer.textContent = `${minutes}:${seconds}`;
+  // decrease time
+  if (time === 0) {
+    clearInterval(logoutTimer);
+    elements.labelWelcome.textContent = 'Log in to get started';
+    elements.containerApp.style.opacity = 0;
+  } else {
+    time--;
+  }
+}
+
+function startLogoutTimer() {
+  // call interval timer every second
+  tickTimer();
+  logoutTimer = setInterval(tickTimer, 1000);
+}
+
+// Function to reset the timer
+function resetTimer() {
+  // Reset the timer to its initial value
+  time = 300; // Assuming you want to reset it to 300 seconds (5 minutes)
+}
+
 // ==========================================================================
 // Event Handlers
 // ==========================================================================
 
 elements.btnLogin.addEventListener('click', e => {
   e.preventDefault();
+  resetTimer();
   activeAccount = accounts.find(
     account => account.username === elements.inputLoginUsername.value
   );
   if (activeAccount?.pin === +elements.inputLoginPin.value) {
     // display welcome message
     elements.labelWelcome.textContent = `Hi ${activeAccount.owner}`;
+    //start logout timer
+    startLogoutTimer();
     // update UI with account info
     updateUIForAccount();
     //set date before showing app
@@ -221,8 +258,20 @@ elements.btnLoan.addEventListener('click', e => {
     elements.labelErrorLoan.innerHTML = '';
     setTimeout(() => {
       // update UI
+      elements.modalMessage.innerHTML = `Dear ${activeAccount.owner} <br><br>
+      EasyBank would like to confirm that your loan has been approved.<br>
+      The amount of ${loanRequest} has been deposited into your account.<br>
+      The amount should reflect immediatley.<br><br>
+      
+      Thank you for being a customer of EasyBank!<br><br><br>
+      
+      EasyBank
+      Banking Made Easy!
+      `;
+      elements.modal.classList.toggle('hidden');
+      elements.overlay.classList.toggle('hidden');
       updateUIForAccount();
-    }, 4000);
+    }, 3000);
   } else {
     elements.labelErrorLoan.innerHTML =
       '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> No deposit, at least 10% of the requested loan</p>';
@@ -270,6 +319,12 @@ elements.btnSort.addEventListener('click', e => {
   sortedDisplay = !sortedDisplay;
   displayTransactions(activeAccount, sortedDisplay);
 });
+
+elements.btnCloseModal.addEventListener('click', () => closeModal());
+
+// Add event listeners for mouse move and key events
+document.addEventListener('mousemove', resetTimer);
+document.addEventListener('keydown', resetTimer);
 
 // ==========================================================================
 // Create Object Properties - usernames
