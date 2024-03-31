@@ -157,7 +157,6 @@ elements.btnLogin.addEventListener('click', e => {
     elements.inputLoginPin.value = '';
     elements.inputLoginUsername.value = '';
     elements.inputLoginPin.blur(); // remove focus
-    console.log(activeAccount);
   }
 });
 
@@ -217,12 +216,13 @@ elements.btnLoan.addEventListener('click', e => {
     // push date and amount
     activeAccount.transactions.push(loanRequest);
     activeAccount.transactionDates.push(dateToPush);
-    // update UI
-    updateUIForAccount();
     elements.inputLoanAmount.value = '';
     elements.inputLoanAmount.blur();
     elements.labelErrorLoan.innerHTML = '';
-    console.log(activeAccount);
+    setTimeout(() => {
+      // update UI
+      updateUIForAccount();
+    }, 4000);
   } else {
     elements.labelErrorLoan.innerHTML =
       '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> No deposit, at least 10% of the requested loan</p>';
