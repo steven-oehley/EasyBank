@@ -1,144 +1,51 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
 // EASYBANK APP
 
-// Data
-const account1 = {
-  owner: 'Steven OEhley',
-  transactions: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-  interestRate: 1.2, // %
-  pin: 1111,
-
-  transactionDates: [
-    '2022-11-18T21:31:17.178Z',
-    '2022-12-23T07:42:02.383Z',
-    '2023-01-28T09:15:04.904Z',
-    '2023-04-01T10:17:24.185Z',
-    '2023-05-08T14:11:59.604Z',
-    '2023-07-26T17:01:17.194Z',
-    '2023-07-28T23:36:17.929Z',
-    '2023-08-01T10:51:36.790Z',
-  ],
-  currency: 'ZAR',
-  locale: 'en-GB',
-};
-
-const account2 = {
-  owner: 'Jessica Davis',
-  transactions: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
-  pin: 2222,
-
-  transactionDates: [
-    '2022-11-01T13:15:33.035Z',
-    '2022-11-30T09:48:16.867Z',
-    '2022-12-25T06:04:23.907Z',
-    '2023-01-25T14:18:46.235Z',
-    '2023-02-05T16:33:06.386Z',
-    '2023-04-10T14:43:26.374Z',
-    '2023-06-25T18:49:59.371Z',
-    '2023-07-26T12:01:20.894Z',
-  ],
-  currency: 'USD',
-  locale: 'en-US',
-};
-
-const account3 = {
-  owner: 'Steven Thomas Williams',
-  transactions: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-  transactionDates: [
-    '2022-11-01T13:15:33.035Z',
-    '2022-11-30T09:48:16.867Z',
-    '2022-12-25T06:04:23.907Z',
-    '2023-01-25T14:18:46.235Z',
-    '2023-02-05T16:33:06.386Z',
-    '2023-04-10T14:43:26.374Z',
-    '2023-06-25T18:49:59.371Z',
-    '2023-07-26T12:01:20.894Z',
-  ],
-  currency: 'USD',
-  locale: 'en-US',
-};
-
-const account4 = {
-  owner: 'Sarah Smith',
-  transactions: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-  transactionDates: [
-    '2022-11-01T13:15:33.035Z',
-    '2022-11-30T09:48:16.867Z',
-    '2022-12-25T06:04:23.907Z',
-    '2023-01-25T14:18:46.235Z',
-  ],
-  currency: 'USD',
-  locale: 'en-GB',
-};
-
-const accounts = [account1, account2, account3, account4];
+import { accounts } from './accounts.js';
+import { elements } from './elements.js';
 
 let activeAccount;
 let sortedDisplay = false;
-// ==========================================================================
-// Elements
-// ==========================================================================
-
-// label elements
-const labelWelcome = document.querySelector('.welcome');
-const labelDate = document.querySelector('.date');
-const labelBalance = document.querySelector('.balance__value');
-const labelSumIn = document.querySelector('.summary__value--in');
-const labelSumOut = document.querySelector('.summary__value--out');
-const labelSumInterest = document.querySelector('.summary__value--interest');
-const labelErrorTransfer = document.querySelector('.error__message--transfer');
-const labelErrorLoan = document.querySelector('.error__message--loan');
-const labelErrorClose = document.querySelector('.error__message--close');
-const labelTimer = document.querySelector('.timer');
-
-// container elements
-const containerApp = document.querySelector('.app');
-const containerTransactions = document.querySelector('.movements');
-
-// buttons
-const btnLogin = document.querySelector('.login__btn');
-const btnTransfer = document.querySelector('.form__btn--transfer');
-const btnLoan = document.querySelector('.form__btn--loan');
-const btnClose = document.querySelector('.form__btn--close');
-const btnSort = document.querySelector('.btn--sort');
-
-// input elements
-const inputLoginUsername = document.querySelector('.login__input--user');
-const inputLoginPin = document.querySelector('.login__input--pin');
-const inputTransferTo = document.querySelector('.form__input--to');
-const inputTransferAmount = document.querySelector('.form__input--amount');
-const inputLoanAmount = document.querySelector('.form__input--loan-amount');
-const inputCloseUsername = document.querySelector('.form__input--user');
-const inputClosePin = document.querySelector('.form__input--pin');
 
 // ==========================================================================
 // Functions
 // ==========================================================================
+function calcDaysPassed(d1, d2) {
+  const oneDay = 1000 * 60 * 60 * 24; // milliseconds in a day
+  const diffInMilliseconds = Math.abs(d2 - d1);
+  return Math.floor(diffInMilliseconds / oneDay); // return the number of whole days
+}
+
 function displayTransactions(account, sort = false) {
   let withdrawalNumber = 1;
   let depositNumber = 1;
 
   // prevent users from seeing others transactions if log in one after the other
-  containerTransactions.innerHTML = '';
+  elements.containerTransactions.innerHTML = '';
 
   const transactions = sort
     ? [...account.transactions].sort((a, b) => a - b)
     : account.transactions;
 
   transactions.forEach((transaction, index) => {
-    const transactionDate = new Date(activeAccount.transactionDates[index]);
+    const currentDate = new Date();
+    const transactionDate = new Date(account.transactionDates[index]);
     const day = `${transactionDate.getDate()}`.padStart(2, 0); // padStart will insert a zero if value less than 2 in length
     const month = `${transactionDate.getMonth() + 1}`.padStart(2, 0); // month are zero indexed add one then padStart ie 3 will be 03
     const year = transactionDate.getFullYear();
-    const dateToRender = `${day}/${month}/${year}`;
+    const daysPassed = calcDaysPassed(transactionDate, currentDate);
+    let dateToRender;
+
+    if (daysPassed === 0) {
+      dateToRender = 'today';
+    } else if (daysPassed === 1) {
+      dateToRender = 'yesterday';
+    } else if (daysPassed <= 7) {
+      dateToRender = `${daysPassed} days ago`;
+    } else {
+      dateToRender = `${day}/${month}/${year}`;
+    }
 
     const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
     const htmlToRender = `
@@ -156,7 +63,10 @@ function displayTransactions(account, sort = false) {
           </div>
         </div>
     `;
-    containerTransactions.insertAdjacentHTML('afterbegin', htmlToRender);
+    elements.containerTransactions.insertAdjacentHTML(
+      'afterbegin',
+      htmlToRender
+    );
 
     transactionType === 'deposit' ? depositNumber++ : withdrawalNumber++;
   });
@@ -192,7 +102,7 @@ function calcDisplayBalance(account) {
     0
   );
   account.balance = balance;
-  labelBalance.textContent = `${balance.toFixed(2)} ZAR`;
+  elements.labelBalance.textContent = `${balance.toFixed(2)} ZAR`;
 }
 
 function calcDisplaySummary(account) {
@@ -208,9 +118,11 @@ function calcDisplaySummary(account) {
     .filter(interestPayment => interestPayment > 1) // bank not pay interest on cents
     .reduce((acc, interest) => acc + interest);
 
-  labelSumIn.textContent = `R ${depositsTotal.toFixed(2)}`;
-  labelSumOut.textContent = `R ${Math.abs(withdrawalsTotal).toFixed(2)}`;
-  labelSumInterest.textContent = `R ${interestTotal.toFixed(2)}`;
+  elements.labelSumIn.textContent = `R ${depositsTotal.toFixed(2)}`;
+  elements.labelSumOut.textContent = `R ${Math.abs(withdrawalsTotal).toFixed(
+    2
+  )}`;
+  elements.labelSumInterest.textContent = `R ${interestTotal.toFixed(2)}`;
 }
 
 function updateUIForAccount() {
@@ -227,34 +139,35 @@ function updateUIForAccount() {
 // Event Handlers
 // ==========================================================================
 
-btnLogin.addEventListener('click', e => {
+elements.btnLogin.addEventListener('click', e => {
   e.preventDefault();
   activeAccount = accounts.find(
-    account => account.username === inputLoginUsername.value
+    account => account.username === elements.inputLoginUsername.value
   );
-  if (activeAccount?.pin === +inputLoginPin.value) {
+  if (activeAccount?.pin === +elements.inputLoginPin.value) {
     // display welcome message
-    labelWelcome.textContent = `Hi ${activeAccount.owner}`;
+    elements.labelWelcome.textContent = `Hi ${activeAccount.owner}`;
     // update UI with account info
     updateUIForAccount();
     //set date before showing app
-    labelDate.textContent = createDate(true);
+    elements.labelDate.textContent = createDate(true);
     // show app
-    containerApp.style.opacity = 100;
+    elements.containerApp.style.opacity = 100;
     // reset login form / information
-    inputLoginPin.value = '';
-    inputLoginUsername.value = '';
-    inputLoginPin.blur(); // remove focus
+    elements.inputLoginPin.value = '';
+    elements.inputLoginUsername.value = '';
+    elements.inputLoginPin.blur(); // remove focus
+    console.log(activeAccount);
   }
 });
 
-btnTransfer.addEventListener('click', e => {
+elements.btnTransfer.addEventListener('click', e => {
   // prevent form default
   e.preventDefault();
 
   // transfer to and amount values
-  const transferTo = inputTransferTo.value;
-  const transferAmount = +inputTransferAmount.value;
+  const transferTo = elements.inputTransferTo.value;
+  const transferAmount = +elements.inputTransferAmount.value;
 
   // find transferTo account from username
   const transferAccount = accounts.find(acc => acc.username === transferTo);
@@ -268,55 +181,61 @@ btnTransfer.addEventListener('click', e => {
   ) {
     // transfer money
     const dateToPush = new Date().toISOString();
-
+    // push transfer amounts
     activeAccount.transactions.push(-transferAmount);
     transferAccount.transactions.push(transferAmount);
+    // push same date for transactions
     activeAccount.transactionDates.push(dateToPush);
     transferAccount.transactionDates.push(dateToPush);
+
+    // reset UI
     updateUIForAccount();
-    inputTransferTo.value = '';
-    inputTransferAmount.value = '';
-    inputTransferAmount.blur();
-    labelErrorTransfer.innerHTML = '';
-    console.log('VALID TRANSFER');
+    elements.inputTransferTo.value = '';
+    elements.inputTransferAmount.value = '';
+    elements.inputTransferAmount.blur();
+    elements.labelErrorTransfer.innerHTML = '';
   } else {
-    labelErrorTransfer.innerHTML =
+    elements.labelErrorTransfer.innerHTML =
       '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> Error with details, please try again.</p>';
-    inputTransferTo.value = '';
-    inputTransferAmount.value = '';
-    inputTransferAmount.blur();
+    elements.inputTransferTo.value = '';
+    elements.inputTransferAmount.value = '';
+    elements.inputTransferAmount.blur();
   }
 });
 
-btnLoan.addEventListener('click', e => {
+elements.btnLoan.addEventListener('click', e => {
   e.preventDefault();
-  const loanRequest = Math.floor(inputLoanAmount.value); // Math.floor() does type coercion no need to convert
+  const loanRequest = Math.floor(elements.inputLoanAmount.value); // Math.floor() does type coercion no need to convert
   // only grant loan if at least one deposit is >= 10% of loan request
   if (
     activeAccount.transactions.some(
       transaction => transaction >= loanRequest * 0.1
     )
   ) {
+    // get date
     const dateToPush = new Date().toISOString();
+    // push date and amount
     activeAccount.transactions.push(loanRequest);
     activeAccount.transactionDates.push(dateToPush);
+    // update UI
     updateUIForAccount();
-    inputLoanAmount.value = '';
-    inputLoanAmount.blur();
-    labelErrorLoan.innerHTML = '';
+    elements.inputLoanAmount.value = '';
+    elements.inputLoanAmount.blur();
+    elements.labelErrorLoan.innerHTML = '';
+    console.log(activeAccount);
   } else {
-    labelErrorLoan.innerHTML =
+    elements.labelErrorLoan.innerHTML =
       '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> No deposit, at least 10% of the requested loan</p>';
-    inputLoanAmount.value = '';
-    inputLoanAmount.blur();
+    elements.inputLoanAmount.value = '';
+    elements.inputLoanAmount.blur();
   }
 });
 
-btnClose.addEventListener('click', e => {
+elements.btnClose.addEventListener('click', e => {
   // prevent default
   e.preventDefault();
-  const accountUser = inputCloseUsername.value;
-  const accountPin = +inputClosePin.value;
+  const accountUser = elements.inputCloseUsername.value;
+  const accountPin = +elements.inputClosePin.value;
   if (
     activeAccount.username === accountUser &&
     activeAccount.pin === accountPin
@@ -328,25 +247,25 @@ btnClose.addEventListener('click', e => {
     accounts.splice(accToDeleteIndex, 1);
 
     //hide UI
-    containerApp.style.opacity = 0;
+    elements.containerApp.style.opacity = 0;
 
     // reset welcome message
-    labelWelcome.textContent = 'Log in to get started';
+    elements.labelWelcome.textContent = 'Log in to get started';
 
     // reset labelErrorClose
-    labelErrorClose.innerHTML = '';
+    elements.labelErrorClose.innerHTML = '';
   } else {
-    labelErrorClose.innerHTML =
+    elements.labelErrorClose.innerHTML =
       '<p><span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> Error with details, please try again.</p>';
   }
 
   // reset labels
-  inputCloseUsername.value = '';
-  inputClosePin.value = '';
-  inputClosePin.blur();
+  elements.inputCloseUsername.value = '';
+  elements.inputClosePin.value = '';
+  elements.inputClosePin.blur();
 });
 
-btnSort.addEventListener('click', e => {
+elements.btnSort.addEventListener('click', e => {
   e.preventDefault();
   sortedDisplay = !sortedDisplay;
   displayTransactions(activeAccount, sortedDisplay);
